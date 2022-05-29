@@ -73,4 +73,13 @@ public class ContactDAO extends SQLiteOpenHelper {
         }
         return contacts;
     }
+
+    public int editContact(Contact contact){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", contact.getName());
+        values.put("email", contact.getEmail());
+        values.put("phone", contact.getPhone());
+        return db.update("Contact", values, "id=?", new String[]{String.valueOf(contact.getId())});
+    }
 }
