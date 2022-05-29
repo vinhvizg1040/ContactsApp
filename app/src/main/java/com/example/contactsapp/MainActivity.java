@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.contactsapp.controller.ContactBaseAdapter;
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnAdd;
     ArrayList<Contact> contacts;
-
+    SearchView txtSearch;
     ListView lvContacts;
 
     @Override
@@ -40,6 +41,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        txtSearch = findViewById(R.id.txtSearch);
+        txtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                ContactDAO dao = new ContactDAO(getApplicationContext());
+                ArrayList<Contact> contact = (ArrayList<Contact>) dao.findAll();
+                ArrayList<Contact> co = new ArrayList<>();
+                for (Contact cont : contact) {
+                    if (cont.getName().toLowerCase().contains(s)) {
+                        co.add(cont);
+                    }
+                }
+                ContactBaseAdapter baseAdapter = new ContactBaseAdapter(co, MainActivity.this, dao);
+                lvContacts.setAdapter(baseAdapter);
+                return false;
+            }
+        });
 
         //get All Contact when start
         lvContacts = findViewById(R.id.lvContacts);
