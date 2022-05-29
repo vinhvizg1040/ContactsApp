@@ -15,7 +15,7 @@
         android:orientation="vertical"
         tools:layout_editor_absoluteY="1dp">
 
-        <androidx.appcompat.widget.SearchView
+        <SearchView
             android:id="@+id/txtSearch"
             android:layout_width="348dp"
             android:layout_height="wrap_content"
