@@ -32,6 +32,7 @@ public class EditActivity extends AppCompatActivity {
         txtePhone = findViewById(R.id.txtePhone);
         txteMail = findViewById(R.id.txteMail);
 
+        //Delete
         btnDelete = findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +41,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        //Save
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override

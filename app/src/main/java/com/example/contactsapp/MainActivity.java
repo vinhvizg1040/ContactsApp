@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //search
         txtSearch = findViewById(R.id.txtSearch);
         txtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         getContact();
     }
 
+    //getAll Contact
     private void GetContacts() {
         ContactDAO dao = new ContactDAO(this);
         try {
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //getOne Contact when item in listView clicked
     private void getContact() {
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     contact = (Contact) baseAdapter.getItem(i);
 
                     Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                    //send this data (contact)
                     intent.putExtra("contact", contact);
                     startActivity(intent);
                 } catch (Exception e) {

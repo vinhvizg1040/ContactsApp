@@ -23,6 +23,7 @@ public class AddActivity extends AppCompatActivity {
 
         this.getSupportActionBar().hide();
 
+        //add new Contact when buttonSave is clicked
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
