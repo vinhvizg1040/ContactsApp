@@ -80,4 +80,5 @@ public class ContactDAO extends SQLiteOpenHelper {
         values.put("phone", contact.getPhone());
         db.update("Contact", values, "id=?", new String[]{String.valueOf(contact.getId())});
     }
+
 }

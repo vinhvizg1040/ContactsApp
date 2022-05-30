@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +11,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="729dp"
+        android:layout_height="773dp"
         android:layout_margin="10dp"
         android:orientation="vertical"
         tools:layout_editor_absoluteY="1dp">
@@ -19,14 +20,14 @@
             android:id="@+id/txtSearch"
             android:layout_width="348dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp" />
 
         <ListView
             android:id="@+id/lvContacts"
             android:layout_width="match_parent"
-            android:layout_height="580dp"
+            android:layout_height="599dp"
             android:layout_margin="10dp"
-            android:dividerHeight="10dp"/>
+            android:dividerHeight="10dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +37,7 @@
             <Button
                 android:id="@+id/btnAdd"
                 android:layout_width="330dp"
-                android:layout_height="wrap_content"
+                android:layout_height="59dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -45,5 +46,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
 </LinearLayout>

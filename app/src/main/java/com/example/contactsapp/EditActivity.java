@@ -57,8 +57,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void deleteButton() {
-
-
+        //show yes/no dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Confirm");
         builder.setMessage("Are you sure Delete " + txteName.getText().toString() + " ?");
@@ -84,31 +83,33 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void saveButton() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirm");
-        builder.setMessage("Are you sure?");
+        if (validateInfo(txteName.getText().toString(), txtePhone.getText().toString(), txteMail.getText().toString())){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Confirm");
+            builder.setMessage("Are you sure?");
 
-        builder.setPositiveButton("NO", (dialog, which) -> dialog.dismiss());
+            builder.setPositiveButton("NO", (dialog, which) -> dialog.dismiss());
 
-        builder.setNegativeButton("YES", (dialog, which) -> {
-            ContactDAO dao = new ContactDAO(getApplicationContext());
+            builder.setNegativeButton("YES", (dialog, which) -> {
+                ContactDAO dao = new ContactDAO(getApplicationContext());
 
-            Contact contact;
-            contact = (Contact) getIntent().getSerializableExtra("contact");
+                Contact contact;
+                contact = (Contact) getIntent().getSerializableExtra("contact");
 
-            contact.setName(txteName.getText().toString());
-            contact.setPhone(txtePhone.getText().toString());
-            contact.setEmail(txteMail.getText().toString());
+                contact.setName(txteName.getText().toString());
+                contact.setPhone(txtePhone.getText().toString());
+                contact.setEmail(txteMail.getText().toString());
 
-            dao.editContact(contact);
-            Intent intent = new Intent(EditActivity.this, MainActivity.class);
-            startActivity(intent);
+                dao.editContact(contact);
+                Intent intent = new Intent(EditActivity.this, MainActivity.class);
+                startActivity(intent);
 
-            dialog.dismiss();
-        });
+                dialog.dismiss();
+            });
 
-        AlertDialog alert = builder.create();
-        alert.show();
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 
     }
 
@@ -117,5 +118,26 @@ public class EditActivity extends AppCompatActivity {
         startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
     }
 
+    //Regex
+    public Boolean validateInfo(String name, String phone, String mail){
+        final String phoneRegex = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
+        final String mailRegex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
 
+        if (name.trim().length() == 0){
+            txteName.requestFocus();
+            txteName.setError("Field cannot empty");
+            return false;
+        }else if (!phone.matches(phoneRegex)){
+            txtePhone.requestFocus();
+            txtePhone.setError("wrong format");
+            return false;
+        }else if (!mail.trim().matches(mailRegex)){
+            txteMail.requestFocus();
+            txteMail.setError("email is not valid");
+            return false;
+        }
+        return true;
+    }
 }
