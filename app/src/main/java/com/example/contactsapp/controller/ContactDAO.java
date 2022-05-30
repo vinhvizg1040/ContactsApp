@@ -6,11 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
-
 import com.example.contactsapp.entities.Contact;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,28 +55,29 @@ public class ContactDAO extends SQLiteOpenHelper {
         List<Contact> contacts = new ArrayList<>();
         String sql = "select * from Contact";
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(sql,null);
-        if (cursor.moveToFirst()){
-            do {
-                Contact contact = new Contact();
+        try (Cursor cursor = db.rawQuery(sql, null)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Contact contact = new Contact();
 
-                contact.setId(cursor.getInt(0));
-                contact.setName(cursor.getString(1));
-                contact.setEmail(cursor.getString(2));
-                contact.setPhone(cursor.getString(3));
+                    contact.setId(cursor.getInt(0));
+                    contact.setName(cursor.getString(1));
+                    contact.setEmail(cursor.getString(2));
+                    contact.setPhone(cursor.getString(3));
 
-                contacts.add(contact);
-            }while (cursor.moveToNext());
+                    contacts.add(contact);
+                } while (cursor.moveToNext());
+            }
         }
         return contacts;
     }
 
-    public int editContact(Contact contact){
+    public void editContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", contact.getName());
         values.put("email", contact.getEmail());
         values.put("phone", contact.getPhone());
-        return db.update("Contact", values, "id=?", new String[]{String.valueOf(contact.getId())});
+        db.update("Contact", values, "id=?", new String[]{String.valueOf(contact.getId())});
     }
 }

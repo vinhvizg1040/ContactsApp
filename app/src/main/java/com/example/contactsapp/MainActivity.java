@@ -1,17 +1,13 @@
 package com.example.contactsapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.contactsapp.controller.ContactBaseAdapter;
 import com.example.contactsapp.controller.ContactDAO;
@@ -37,12 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
         //if click btnAdd -> go to AddActivity
         btnAdd = findViewById(R.id.btnAdd);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddActivity.class);
-                startActivity(intent);
-            }
+        btnAdd.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, AddActivity.class);
+            startActivity(intent);
         });
 
         //search
@@ -90,23 +83,20 @@ public class MainActivity extends AppCompatActivity {
 
     //getOne Contact when item in listView clicked
     private void getContact() {
-        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                try {
-                    ContactDAO dao = new ContactDAO(getApplicationContext());
-                    contacts = (ArrayList<Contact>) dao.findAll();
-                    ContactBaseAdapter baseAdapter = new ContactBaseAdapter(contacts, MainActivity.this, dao);
-                    Contact contact = new Contact();
-                    contact = (Contact) baseAdapter.getItem(i);
+        lvContacts.setOnItemClickListener((adapterView, view, i, l) -> {
+            try {
+                ContactDAO dao = new ContactDAO(getApplicationContext());
+                contacts = (ArrayList<Contact>) dao.findAll();
+                ContactBaseAdapter baseAdapter = new ContactBaseAdapter(contacts, MainActivity.this, dao);
+                Contact contact;
+                contact = (Contact) baseAdapter.getItem(i);
 
-                    Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                    //send this data (contact)
-                    intent.putExtra("contact", contact);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                //send this data (contact)
+                intent.putExtra("contact", contact);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,15 +1,13 @@
 package com.example.contactsapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.contactsapp.controller.ContactDAO;
 import com.example.contactsapp.entities.Contact;
@@ -24,7 +22,8 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        this.getSupportActionBar().hide();
+
+//        this.getSupportActionBar().hide();
 
 
         txteName = findViewById(R.id.txteName);
@@ -33,29 +32,14 @@ public class EditActivity extends AppCompatActivity {
 
         //Delete
         btnDelete = findViewById(R.id.btnDelete);
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteButton();
-            }
-        });
+        btnDelete.setOnClickListener(view -> deleteButton());
 
         //Save
         btnSave = findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveButton();
-            }
-        });
+        btnSave.setOnClickListener(view -> saveButton());
 
         btnCall = findViewById(R.id.btnCall);
-        btnCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialContactPhone();
-            }
-        });
+        btnCall.setOnClickListener(view -> dialContactPhone());
 
 
         showInfo();
@@ -64,7 +48,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void showInfo() {
-        Contact contact = new Contact();
+        Contact contact;
         contact = (Contact) getIntent().getSerializableExtra("contact");
 
         txteName.setText(contact.getName());
@@ -79,29 +63,19 @@ public class EditActivity extends AppCompatActivity {
         builder.setTitle("Confirm");
         builder.setMessage("Are you sure Delete " + txteName.getText().toString() + " ?");
 
-        builder.setPositiveButton("NO", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("NO", (dialog, which) -> dialog.dismiss());
 
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton("YES", (dialog, which) -> {
+            Contact contact;
+            contact = (Contact) getIntent().getSerializableExtra("contact");
 
-                dialog.dismiss();
-            }
-        });
+            ContactDAO dao = new ContactDAO(getApplicationContext());
+            dao.removeContact(contact.getId());
 
-        builder.setNegativeButton("YES", new DialogInterface.OnClickListener() {
+            Intent intent = new Intent(EditActivity.this, MainActivity.class);
+            startActivity(intent);
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Contact contact = new Contact();
-                contact = (Contact) getIntent().getSerializableExtra("contact");
-
-                ContactDAO dao = new ContactDAO(getApplicationContext());
-                dao.removeContact(contact.getId());
-
-                Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                startActivity(intent);
-
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
         AlertDialog alert = builder.create();
@@ -114,33 +88,23 @@ public class EditActivity extends AppCompatActivity {
         builder.setTitle("Confirm");
         builder.setMessage("Are you sure?");
 
-        builder.setPositiveButton("NO", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("NO", (dialog, which) -> dialog.dismiss());
 
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton("YES", (dialog, which) -> {
+            ContactDAO dao = new ContactDAO(getApplicationContext());
 
-                dialog.dismiss();
-            }
-        });
+            Contact contact;
+            contact = (Contact) getIntent().getSerializableExtra("contact");
 
-        builder.setNegativeButton("YES", new DialogInterface.OnClickListener() {
+            contact.setName(txteName.getText().toString());
+            contact.setPhone(txtePhone.getText().toString());
+            contact.setEmail(txteMail.getText().toString());
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ContactDAO dao = new ContactDAO(getApplicationContext());
+            dao.editContact(contact);
+            Intent intent = new Intent(EditActivity.this, MainActivity.class);
+            startActivity(intent);
 
-                Contact contact = new Contact();
-                contact = (Contact) getIntent().getSerializableExtra("contact");
-
-                contact.setName(txteName.getText().toString());
-                contact.setPhone(txtePhone.getText().toString());
-                contact.setEmail(txteMail.getText().toString());
-
-                dao.editContact(contact);
-                Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                startActivity(intent);
-
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
         AlertDialog alert = builder.create();

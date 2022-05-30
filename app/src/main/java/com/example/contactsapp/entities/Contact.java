@@ -1,7 +1,6 @@
 package com.example.contactsapp.entities;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Contact implements Serializable {
     int Id;
@@ -10,13 +9,6 @@ public class Contact implements Serializable {
     String Phone;
 
     public Contact() {
-    }
-
-    public Contact(int id, String name, String email, String phone) {
-        Id = id;
-        Name = name;
-        Email = email;
-        Phone = phone;
     }
 
     public int getId() {

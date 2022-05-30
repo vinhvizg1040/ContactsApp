@@ -15,7 +15,7 @@
         android:orientation="vertical"
         tools:layout_editor_absoluteY="1dp">
 
-        <SearchView
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/txtSearch"
             android:layout_width="348dp"
             android:layout_height="wrap_content"
@@ -24,9 +24,9 @@
         <ListView
             android:id="@+id/lvContacts"
             android:layout_width="match_parent"
-            android:layout_height="582dp"
+            android:layout_height="580dp"
             android:layout_margin="10dp"
-            android:dividerHeight="25dp" />
+            android:dividerHeight="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
 
             <Button
                 android:id="@+id/btnAdd"
-                android:layout_width="328dp"
+                android:layout_width="330dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
