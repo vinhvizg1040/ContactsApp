@@ -2,18 +2,17 @@ package com.example.contactsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
 
 import com.example.contactsapp.controller.ContactDAO;
 import com.example.contactsapp.entities.Contact;
-
-import java.util.ArrayList;
 
 
 public class EditActivity extends AppCompatActivity {
@@ -60,6 +59,8 @@ public class EditActivity extends AppCompatActivity {
 
 
         showInfo();
+
+
     }
 
     public void showInfo() {
@@ -71,35 +72,86 @@ public class EditActivity extends AppCompatActivity {
         txtePhone.setText(contact.getPhone());
     }
 
-    public void deleteButton(){
+    public void deleteButton() {
 
-        Contact contact = new Contact();
-        contact = (Contact) getIntent().getSerializableExtra("contact");
 
-        ContactDAO dao = new ContactDAO(this);
-        dao.removeContact(contact.getId());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure Delete " + txteName.getText().toString() + " ?");
 
-        Intent intent = new Intent(EditActivity.this, MainActivity.class);
-        startActivity(intent);
+        builder.setPositiveButton("NO", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("YES", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Contact contact = new Contact();
+                contact = (Contact) getIntent().getSerializableExtra("contact");
+
+                ContactDAO dao = new ContactDAO(getApplicationContext());
+                dao.removeContact(contact.getId());
+
+                Intent intent = new Intent(EditActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
     }
 
-    public void saveButton(){
-        ContactDAO dao = new ContactDAO(this);
+    public void saveButton() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure?");
 
-        Contact contact = new Contact();
-        contact = (Contact) getIntent().getSerializableExtra("contact");
+        builder.setPositiveButton("NO", new DialogInterface.OnClickListener() {
 
-        contact.setName(txteName.getText().toString());
-        contact.setPhone(txtePhone.getText().toString());
-        contact.setEmail(txteMail.getText().toString());
+            public void onClick(DialogInterface dialog, int which) {
 
-        dao.editContact(contact);
-        Intent intent = new Intent(EditActivity.this, MainActivity.class);
-        startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("YES", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ContactDAO dao = new ContactDAO(getApplicationContext());
+
+                Contact contact = new Contact();
+                contact = (Contact) getIntent().getSerializableExtra("contact");
+
+                contact.setName(txteName.getText().toString());
+                contact.setPhone(txtePhone.getText().toString());
+                contact.setEmail(txteMail.getText().toString());
+
+                dao.editContact(contact);
+                Intent intent = new Intent(EditActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
     }
 
-    public void dialContactPhone(){
+    public void dialContactPhone() {
         final String phoneNumber = txtePhone.getText().toString();
         startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
     }
+
+
 }
