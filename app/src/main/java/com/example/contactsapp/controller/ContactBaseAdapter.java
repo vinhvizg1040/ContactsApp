@@ -23,10 +23,6 @@ public class ContactBaseAdapter extends BaseAdapter {
         this.dao = dao;
     }
 
-    public ContactBaseAdapter(ArrayList<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
     @Override
     public int getCount() {
         return contacts.size();
