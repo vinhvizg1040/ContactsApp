@@ -24,25 +24,53 @@ public class AddActivity extends AppCompatActivity {
 
         Objects.requireNonNull(this.getSupportActionBar()).hide();
 
-        //add new Contact when buttonSave is clicked
-        btnSave = findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(view -> addContact());
-    }
-
-    public void addContact(){
         txtName = findViewById(R.id.txtName);
         txtPhone = findViewById(R.id.txtPhone);
         txtMail = findViewById(R.id.txtMail);
 
-        Contact contact = new Contact();
-        contact.setEmail(txtMail.getText().toString());
-        contact.setName(txtName.getText().toString());
-        contact.setPhone(txtPhone.getText().toString());
+        //add new Contact when buttonSave is clicked
+        btnSave = findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(view ->
 
-        ContactDAO dao = new ContactDAO(this);
-        dao.addNewContact(contact);
+                addContact());
+    }
 
-        Intent intent = new Intent(AddActivity.this, MainActivity.class);
-        startActivity(intent);
+    //add new Contact
+    public void addContact(){
+        if (validateInfo(txtName.getText().toString(), txtPhone.getText().toString(), txtMail.getText().toString())){
+            Contact contact = new Contact();
+            contact.setEmail(txtMail.getText().toString());
+            contact.setName(txtName.getText().toString());
+            contact.setPhone(txtPhone.getText().toString());
+
+            ContactDAO dao = new ContactDAO(this);
+            dao.addNewContact(contact);
+
+            Intent intent = new Intent(AddActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    //Regex
+    public Boolean validateInfo(String name, String phone, String mail){
+        final String phoneRegex = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
+        final String mailRegex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
+
+        if (name.trim().length() == 0){
+            txtName.requestFocus();
+            txtName.setError("Field cannot empty");
+            return false;
+        }else if (!phone.matches(phoneRegex)){
+            txtPhone.requestFocus();
+            txtPhone.setError("wrong format");
+            return false;
+        }else if (!mail.trim().matches(mailRegex)){
+            txtMail.requestFocus();
+            txtMail.setError("email is not valid");
+            return false;
+        }
+        return true;
     }
 }
