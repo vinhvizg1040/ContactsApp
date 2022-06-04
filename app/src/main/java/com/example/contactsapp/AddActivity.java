@@ -1,21 +1,37 @@
 package com.example.contactsapp;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.contactsapp.controller.ContactDAO;
 import com.example.contactsapp.entities.Contact;
+import com.example.contactsapp.services.ImageServices;
+import com.example.contactsapp.services.ValidateServices;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class AddActivity extends AppCompatActivity {
 
     Button btnSave;
     EditText txtName, txtPhone, txtMail;
+    ImageView imgAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +44,25 @@ public class AddActivity extends AppCompatActivity {
         txtPhone = findViewById(R.id.txtPhone);
         txtMail = findViewById(R.id.txtMail);
 
+        imgAvatar = findViewById(R.id.imgAvatar);
+        imgAvatar.setOnClickListener(this::openFileChooser);
         //add new Contact when buttonSave is clicked
         btnSave = findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(view ->
-
-                addContact());
+        btnSave.setOnClickListener(view -> addContact());
     }
 
     //add new Contact
-    public void addContact(){
-        if (validateInfo(txtName.getText().toString(), txtPhone.getText().toString(), txtMail.getText().toString())){
+    public void addContact() {
+        ValidateServices validateServices = new ValidateServices();
+        if (validateServices.validateInfo(txtName, txtPhone, txtMail)) {
             Contact contact = new Contact();
             contact.setEmail(txtMail.getText().toString());
             contact.setName(txtName.getText().toString());
             contact.setPhone(txtPhone.getText().toString());
+
+            ImageServices imageServices = new ImageServices();
+            contact.setImgPath(imageServices.saveImage(imgAvatar, getApplicationContext()));
+
 
             ContactDAO dao = new ContactDAO(this);
             dao.addNewContact(contact);
@@ -51,26 +72,32 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    //Regex
-    public Boolean validateInfo(String name, String phone, String mail){
-        final String phoneRegex = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
-                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
-                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
-        final String mailRegex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
 
-        if (name.trim().length() == 0){
-            txtName.requestFocus();
-            txtName.setError("Field cannot empty");
-            return false;
-        }else if (!phone.matches(phoneRegex)){
-            txtPhone.requestFocus();
-            txtPhone.setError("wrong format");
-            return false;
-        }else if (!mail.trim().matches(mailRegex)){
-            txtMail.requestFocus();
-            txtMail.setError("email is not valid");
-            return false;
+    int requestcode = 1;
+
+    public void openFileChooser(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, requestcode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == requestcode && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                return;
+            }
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
+                imgAvatar.setImageBitmap(selectedImage);
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
         }
-        return true;
     }
 }

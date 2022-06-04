@@ -20,8 +20,8 @@ public class ContactDAO extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String sql = "CREATE TABLE Contact (id integer primary key autoincrement, name varchar(40)" +
-                ", email varchar(40), phone varchar(40))";
+        String sql = "CREATE TABLE Contact (id integer primary key autoincrement, name varchar(40), email varchar(40), phone varchar(40)" +
+                ", imgpath varchar(150))";
         sqLiteDatabase.execSQL(sql);
     }
 
@@ -38,7 +38,7 @@ public class ContactDAO extends SQLiteOpenHelper {
         values.put("name", contact.getName());
         values.put("email", contact.getEmail());
         values.put("phone", contact.getPhone());
-
+        values.put("imgpath", contact.getImgPath());
         db.insert("Contact", null, values);
         close();
     }
@@ -64,6 +64,7 @@ public class ContactDAO extends SQLiteOpenHelper {
                     contact.setName(cursor.getString(1));
                     contact.setEmail(cursor.getString(2));
                     contact.setPhone(cursor.getString(3));
+                    contact.setImgPath(cursor.getString(4));
 
                     contacts.add(contact);
                 } while (cursor.moveToNext());
@@ -78,6 +79,7 @@ public class ContactDAO extends SQLiteOpenHelper {
         values.put("name", contact.getName());
         values.put("email", contact.getEmail());
         values.put("phone", contact.getPhone());
+        values.put("imgpath", contact.getImgPath());
         db.update("Contact", values, "id=?", new String[]{String.valueOf(contact.getId())});
     }
 

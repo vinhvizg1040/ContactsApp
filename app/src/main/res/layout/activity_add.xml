@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context=".AddActivity">
 
+
+    <ImageView
+        android:layout_margin="10dp"
+        android:id="@+id/imgAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="253dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <EditText
         android:id="@+id/txtName"
         android:layout_width="match_parent"

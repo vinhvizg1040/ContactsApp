@@ -7,6 +7,7 @@ public class Contact implements Serializable {
     String Name;
     String Email;
     String Phone;
+    String ImgPath;
 
     public Contact() {
     }
@@ -41,5 +42,13 @@ public class Contact implements Serializable {
 
     public void setPhone(String phone) {
         Phone = phone;
+    }
+
+    public String getImgPath() {
+        return ImgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        ImgPath = imgPath;
     }
 }
